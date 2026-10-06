@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>/* 공개 페이지: 허브·편지함·기록장·상태판 공유 잠금 키(ouroboros-unlock)를 지워 둬. 여기 다녀가면 잠긴 페이지는 다시 비밀번호를 물어 */
+(function(){var K='ouroboros-unlock';function c(){try{sessionStorage.removeItem(K)}catch(_){}}c();addEventListener('pageshow',c);document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')c()});})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0f1c">
 <title>니아의 모스 키보드 · Nia's Morse Keyboard</title>
