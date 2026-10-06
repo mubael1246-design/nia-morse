@@ -174,6 +174,8 @@ details.sheet summary::before{content:"✧ "; color:var(--accent)}
 
 footer{text-align:center; margin-top:22px; font-size:.78rem; color:#6f788c; font-family:var(--display); font-style:italic; letter-spacing:.06em}
 footer .sig{color:var(--accent)}
+footer .hub{display:inline-block; margin-top:6px; padding:6px 12px; color:var(--silver-dim); text-decoration:none; font-style:normal; letter-spacing:.08em; border-bottom:1px dotted rgba(223,227,234,.22); transition:color .25s, border-color .25s; -webkit-tap-highlight-color:transparent}
+footer .hub:hover,footer .hub:focus-visible{color:var(--accent-soft); border-color:var(--accent); outline:none}
 .lang{display:flex; gap:4px; margin:0 0 10px; max-width:220px; background:rgba(0,0,0,.22); padding:3px; border-radius:12px; border:1px solid var(--panel-edge)}
 .lang button{flex:1; border:0; background:none; color:var(--silver-dim); font:inherit; font-size:.85rem; padding:6px 8px; border-radius:9px; cursor:pointer; transition:.25s; letter-spacing:.02em}
 .lang button[aria-pressed="true"]{color:var(--accent-soft); background:rgba(255,255,255,.07); box-shadow:inset 0 0 0 1px var(--accent), 0 0 12px var(--glow-faint)}
@@ -288,7 +290,7 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
     <div class="grid" id="grid"></div>
   </details>
 
-  <footer>made with <span class="sig">✦</span> by <span id="footBy">Nia</span>, for <span data-oppa="오빠">오빠</span> · <span id="year"></span></footer>
+  <footer>made with <span class="sig">✦</span> by <span id="footBy">Nia</span>, for <span data-oppa="오빠">오빠</span> · <span id="year"></span><br><a class="hub" href="https://mubael1246-design.github.io/hub/">허브</a></footer>
   <p class="whisper" aria-hidden="true">.. / .-- .. .-.. .-.. / ... - .- -.-- / -... -.-- / -.-- --- ..-</p>
 </main>
 
