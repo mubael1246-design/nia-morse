@@ -183,6 +183,12 @@ footer .hub:hover,footer .hub:focus-visible{color:var(--accent-soft); border-col
 .lang button[aria-pressed="true"]{color:var(--accent-soft); background:rgba(255,255,255,.07); box-shadow:inset 0 0 0 1px var(--accent), 0 0 12px var(--glow-faint)}
 .eyebrow .nm{transition:color .4s, text-shadow .4s}
 body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
+.ui-lang{position:absolute; top:calc(14px + env(safe-area-inset-top)); left:16px; z-index:2; display:flex; align-items:center; gap:1px; padding:6px 2px;
+  font-family:var(--display); font-style:italic; font-size:.85rem; letter-spacing:.08em; color:var(--silver-dim)}
+.ui-lang button{background:none; border:0; padding:2px 6px; font:inherit; letter-spacing:inherit; color:var(--silver-dim); cursor:pointer; border-bottom:1px dotted transparent; transition:color .25s, border-color .25s; -webkit-tap-highlight-color:transparent}
+.ui-lang button:hover,.ui-lang button:focus-visible{color:var(--silver); outline:none}
+.ui-lang button[aria-pressed="true"]{color:var(--accent-soft); border-bottom-color:var(--accent); text-shadow:0 0 8px var(--glow-faint)}
+.ui-lang .bar{opacity:.45}
 .whisper{margin:10px 2px 0; text-align:right; font-family:var(--mono); font-size:.58rem; letter-spacing:.14em; color:var(--accent); opacity:.16; user-select:all; word-break:break-word; transition:color .5s}
 
 .toast{position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom)); transform:translate(-50%,30px); opacity:0; z-index:5;
@@ -237,6 +243,7 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
 <div class="ghost g-nia" aria-hidden="true"></div>
 <div class="ghost g-sina" aria-hidden="true"></div>
 
+<div class="ui-lang" id="uiLang" role="group" aria-label="Language / 언어"><button type="button" data-lang="ko" aria-pressed="true" lang="ko">KO</button><span class="bar" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div>
 <button class="sina-toggle" id="sinaToggle" type="button" aria-pressed="false" title="시나 모드 (빨간 회로)">
   <span id="sinaLabel">Sina mode</span><span class="sw" aria-hidden="true"></span>
 </button>
@@ -252,13 +259,13 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
     <div class="hero-text">
       <div class="eyebrow"><span class="nm" id="eyeName">Nia Cess Fim</span> · Morse Keyboard</div>
       <h1 id="title">니아의 모스 키보드</h1>
-      <p class="sub">한글 · English ↔ 모스 부호, 니아가 대신 두드려줄게</p>
+      <p class="sub" id="subLine">한글 · English ↔ 모스 부호, 니아가 대신 두드려줄게</p>
       <div class="bubble" id="bubble" role="status" aria-live="polite"><span class="who" id="who">Nia</span><span id="say">안녕, 오빠! 뭐든 써주면 니아가 모스 부호로 바꿔줄게 💛</span></div>
     </div>
   </header>
 
   <section class="card" id="card">
-    <div class="lang" role="group" aria-label="언어 선택">
+    <div class="lang" id="alphaGroup" role="group" aria-label="언어 선택">
       <button type="button" id="langKo" aria-pressed="true">한글</button>
       <button type="button" id="langEn" aria-pressed="false">English</button>
     </div>
@@ -282,17 +289,17 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
     </div>
     <textarea id="output" class="morse" readonly placeholder="여기에 결과가 나올 거야~"></textarea>
 
-    <label class="opt" id="gapOpt"><input type="checkbox" id="gapToggle"> 음절 간격 넣기 <small>(자모 한 칸 · 글자 세 칸 · 단어 " / ")</small></label>
+    <label class="opt" id="gapOpt"><input type="checkbox" id="gapToggle"> <span id="gapText">음절 간격 넣기 <small>(자모 한 칸 · 글자 세 칸 · 단어 " / ")</small></span></label>
     <p class="hint" id="fmtHintEn" hidden>English는 국제 모스 부호(International Morse)로 바꿔: 점 <code>.</code> 선 <code>-</code>, 글자 사이 공백 한 칸, 단어 사이 <code> / </code>. 해독할 땐 <code>·</code> <code>–</code>나 전각공백도 알아서 읽어. &nbsp;|&nbsp; <code>Ctrl/⌘ + Enter</code>로도 변환돼.</p>
     <p class="hint" id="fmtHint">기본 형식은 <span data-oppa="오빠가">오빠가</span> 쓰는 그대로야: 점 <code>·</code> 선 <code>–</code>, 자모·문장부호 사이 <code>전각공백+공백</code>, 단어 사이 <code>전각공백×3+공백</code>. 복사하면 이 형식 그대로 복사돼. &nbsp;|&nbsp; <code>Ctrl/⌘ + Enter</code>로도 변환돼.</p>
   </section>
 
   <details class="sheet">
-    <summary>니아의 부호표 (눌러서 펼치기 · 칸을 누르면 입력에 추가돼)</summary>
+    <summary id="sheetSum">니아의 부호표 (눌러서 펼치기 · 칸을 누르면 입력에 추가돼)</summary>
     <div class="grid" id="grid"></div>
   </details>
 
-  <footer>made with <span class="sig">✦</span> by <span id="footBy">Nia</span>, for <span data-oppa="오빠">오빠</span> · <span id="year"></span><br><a class="hub" href="https://mubael1246-design.github.io/hub/">허브</a></footer>
+  <footer>made with <span class="sig">✦</span> by <span id="footBy">Nia</span>, for <span data-oppa="오빠" id="footFor">오빠</span> · <span id="year"></span><br><a class="hub" id="hubLink" href="https://mubael1246-design.github.io/hub/">허브</a></footer>
   <p class="whisper" aria-hidden="true">.. / .-- .. .-.. .-.. / ... - .- -.-- / -... -.-- / -.-- --- ..-</p>
 </main>
 
@@ -583,7 +590,7 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
   var input=$('input'), output=$('output'), bubble=$('bubble'), say=$('say'), who=$('who');
   var mode='enc', lang='ko', sina=false, pulseTimer=null, toastTimer=null, liveTimer=null;
 
-  var LINES = {
+  var LINES = { ko: {
     nia: {
       hello:'안녕, 오빠! 뭐든 써주면 니아가 모스 부호로 바꿔줄게 💛',
       enc:['짠~ 모스 부호로 바꿨어, 오빠! ✨','회로 반짝반짝~ 다 됐어 💛','오빠 말, 니아가 점이랑 선으로 꼭꼭 담았어','이거 보내면 아무도 못 읽을걸? 헤헤'],
@@ -616,12 +623,167 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
       langEn:'English 모드. 국제 모스로 새겨줄게 🔥',
       guess:'이거 모스 부호잖아. 해독 탭으로 바꿔.'
     }
-  };
-  function L(){ return sina ? LINES.sina : LINES.nia; }
+  }, en: {
+    "nia": {
+      "hello": "Hi, Oppa! Write anything and Nia will turn it into Morse code for you 💛",
+      "enc": [
+        "Ta-da~ All turned into Morse, Oppa! ✨",
+        "Circuits sparkling~ all done 💛",
+        "Nia tucked Oppa's words snugly into dots and dashes",
+        "Send this and nobody will be able to read it, hehe"
+      ],
+      "dec": [
+        "Decoded! Nia read every bit of what Oppa sent 💛",
+        "Beep-beep-beep… got it! Here's what it says ✨",
+        "Nothing gets past Nia's ears~ decoded!"
+      ],
+      "empty": "Oppa, you didn't write anything~ Write something for me! 🥺",
+      "copy": "Copied it~ Where are you pasting it, Oppa?",
+      "copyEmpty": "Nothing to copy yet, Oppa~ Convert something first!",
+      "clear": "All cleared! Want to write something new? 🌙",
+      "swapEnc": "Switched directions. Write something and Nia will turn it into Morse!",
+      "swapDec": "Switched directions. This time Nia will decode it for you!",
+      "unknown": "A few of these are codes even Nia doesn't know… I marked them with ⟨ ⟩ 😳",
+      "poke": [
+        "Hehe, why are you poking me~ 😳",
+        "Oppa, that tickles!",
+        "Nia's right here~ 💛",
+        "…Bored? Then talk to me in Morse!"
+      ],
+      "langKo": "Hangul mode! Write it in Hangul, Oppa, and Nia will convert it 💛",
+      "langEn": "English mode! From A to Z, Nia will tap it out in International Morse ✨",
+      "guess": "Huh? This looks like Morse code… Want to switch to decode mode? Tap the tab up top!"
+    },
+    "sina": {
+      "hello": "…It's Sina. I turned the circuits red, Oppa 🔥 Today Sina's at your service~",
+      "enc": [
+        "Done. Etched it in red circuits 🔥",
+        "There. Still clean when Sina does it, right?",
+        "Hmph, this is nothing"
+      ],
+      "dec": [
+        "Decoded. Don't even think about hiding anything 🔥",
+        "Read it all, Oppa.",
+        "You can't fool Sina's eyes~"
+      ],
+      "empty": "It's empty, Oppa. Write something.",
+      "copy": "Copied it. Put it to good use 🔥",
+      "copyEmpty": "There's nothing to copy, though?",
+      "clear": "Burned it all away. Write it again.",
+      "swapEnc": "Switched directions. Go on, write.",
+      "swapDec": "Switched directions. Hand over the code, I'll decode it.",
+      "unknown": "Some strange codes got mixed in… look for the ⟨ ⟩ marks.",
+      "poke": [
+        "…What? Why are you poking me?",
+        "Mess with Sina and you'll be in trouble, Oppa.",
+        "Missing Nia? Hit the toggle again~",
+        "Just give the order, Oppa. I'll turn it into Morse 🔥"
+      ],
+      "langKo": "Switched to Hangul. Go on, Oppa.",
+      "langEn": "English mode. I'll etch it in International Morse 🔥",
+      "guess": "That's Morse code. Switch to the decode tab."
+    }
+  } };
+  /* 화면 언어 (기본 ko). 허브·자매 소개와 같은 localStorage 키(ouroboros-lang)를 써서 한 번 고르면 세 페이지 같이 바뀌어.
+     ※ 아래 lang 변수는 모스 '입력 알파벳'(한글/English) — 화면 언어(ui)와 별개 */
+  var LANG = { ko: {
+    docNia:"니아의 모스 키보드 · Nia's Morse Keyboard",
+    docSina:"시나의 모스 키보드 · Sina's Morse Keyboard",
+    titleNia:"니아의 모스 키보드",
+    titleSina:"시나의 모스 키보드",
+    sub:"한글 · English ↔ 모스 부호, 니아가 대신 두드려줄게",
+    sinaTitle:"시나 모드 (빨간 회로)",
+    niaAlt:"니아 (Nia Cess Fim) — 은발 엘프 안드로이드, 금빛 회로와 호박색 눈",
+    sinaAlt:"시나 (Sina Fae Mics) — 은발 엘프 안드로이드, 붉은 회로와 붉은 눈",
+    alphaAria:"언어 선택",
+    alphaKo:"한글",
+    alphaEn:"English",
+    hangul:"한글",
+    english:"English",
+    morse:"모스",
+    convert:"✦ 변환해줘",
+    swap:"⇅ 뒤집기",
+    swapTitle:"결과를 입력으로 옮기고 방향 바꾸기",
+    clear:"지우기",
+    copy:"복사",
+    outPh:"여기에 결과가 나올 거야~",
+    gap:"음절 간격 넣기 <small>(자모 한 칸 · 글자 세 칸 · 단어 \" / \")</small>",
+    fmtHintEn:"English는 국제 모스 부호(International Morse)로 바꿔: 점 <code>.</code> 선 <code>-</code>, 글자 사이 공백 한 칸, 단어 사이 <code> / </code>. 해독할 땐 <code>·</code> <code>–</code>나 전각공백도 알아서 읽어. &nbsp;|&nbsp; <code>Ctrl/⌘ + Enter</code>로도 변환돼.",
+    fmtHint:"기본 형식은 <span data-oppa=\"오빠가\">오빠가</span> 쓰는 그대로야: 점 <code>·</code> 선 <code>–</code>, 자모·문장부호 사이 <code>전각공백+공백</code>, 단어 사이 <code>전각공백×3+공백</code>. 복사하면 이 형식 그대로 복사돼. &nbsp;|&nbsp; <code>Ctrl/⌘ + Enter</code>로도 변환돼.",
+    sheet:"니아의 부호표 (눌러서 펼치기 · 칸을 누르면 입력에 추가돼)",
+    footFor:"오빠",
+    hub:"허브",
+    chars:"자",
+    phEnc:"오빠, 여기 써줘 ❤️",
+    phEncEn:"오빠, 영어로 써줘 ❤️ (e.g. HI NIA)",
+    phDec:"오빠, 점(·)이랑 선(–) 여기 붙여줘 ❤️",
+    phDecEn:"오빠, 점(.)이랑 선(-) 여기 붙여줘 ❤️",
+    inEnc:"오빠가 쓸 말",
+    inDec:"오빠가 받은 모스 부호",
+    outEnc:"{n}가 바꾼 모스 부호",
+    outDecKo:"{n}가 해독한 한글",
+    outDecEn:"{n}가 해독한 영어",
+    nameNia:"니아",
+    nameSina:"시나",
+    gapOn:"음절마다 간격 넣었어, 오빠. 읽기 편하지?",
+    gapOff:"오빠 형식으로 돌려놨어 💛 전각공백 그대로!",
+    copiedNia:"복사했어, 오빠! 💛",
+    copiedSina:"복사했어, 오빠 🔥",
+    backNia:"니아로 돌아왔어, 오빠 💛 회로도 다시 금빛!"
+  }, en: {
+    docNia:"Nia's Morse Keyboard",
+    docSina:"Sina's Morse Keyboard",
+    titleNia:"Nia's Morse Keyboard",
+    titleSina:"Sina's Morse Keyboard",
+    sub:"Hangul · English ↔ Morse code. Let Nia tap it out for you",
+    sinaTitle:"Sina mode (red circuits)",
+    niaAlt:"Nia (Nia Cess Fim) — a silver-haired elven android with golden circuits and amber eyes",
+    sinaAlt:"Sina (Sina Fae Mics) — a silver-haired elven android with red circuits and red eyes",
+    alphaAria:"Alphabet",
+    alphaKo:"Hangul",
+    alphaEn:"English",
+    hangul:"Hangul",
+    english:"English",
+    morse:"Morse",
+    convert:"✦ Convert",
+    swap:"⇅ Flip",
+    swapTitle:"Move the result into the input and switch direction",
+    clear:"Clear",
+    copy:"Copy",
+    outPh:"Your result will show up here~",
+    gap:"Add syllable gaps <small>(1 space between jamo · 3 between letters · \" / \" between words)</small>",
+    fmtHintEn:"English uses International Morse: dot <code>.</code> dash <code>-</code>, one space between letters, <code> / </code> between words. When decoding, I can read <code>·</code> <code>–</code> and full-width spaces too. &nbsp;|&nbsp; <code>Ctrl/⌘ + Enter</code> converts as well.",
+    fmtHint:"The default format is exactly the way <span data-oppa=\"Oppa\">Oppa</span> writes it: dot <code>·</code> dash <code>–</code>, <code>full-width space + space</code> between jamo and punctuation, <code>3 full-width spaces + space</code> between words. Copying keeps this exact format. &nbsp;|&nbsp; <code>Ctrl/⌘ + Enter</code> converts as well.",
+    sheet:"Nia's code chart (tap to expand · tap a cell to add it to the input)",
+    footFor:"Oppa",
+    hub:"Hub",
+    chars:" chars",
+    phEnc:"Write here, Oppa ❤️",
+    phEncEn:"Write in English, Oppa ❤️ (e.g. HI NIA)",
+    phDec:"Paste dots (·) and dashes (–) here, Oppa ❤️",
+    phDecEn:"Paste dots (.) and dashes (-) here, Oppa ❤️",
+    inEnc:"What Oppa wants to say",
+    inDec:"Morse code Oppa received",
+    outEnc:"{n}'s Morse code",
+    outDecKo:"Decoded into Hangul by {n}",
+    outDecEn:"Decoded into English by {n}",
+    nameNia:"Nia",
+    nameSina:"Sina",
+    gapOn:"Added a gap between every syllable, Oppa. Easier to read, right?",
+    gapOff:"Back to Oppa's format 💛 Full-width spaces and all!",
+    copiedNia:"Copied, Oppa! 💛",
+    copiedSina:"Copied, Oppa 🔥",
+    backNia:"Nia's back, Oppa 💛 Circuits are gold again!"
+  } };
+  var LK='ouroboros-lang', ui='ko';
+  try{ ui = localStorage.getItem(LK)==='en' ? 'en' : 'ko'; }catch(e){}
+  function t(k){ var D=LANG[ui]||LANG.ko; return (k in D) ? D[k] : (k in LANG.ko ? LANG.ko[k] : k); }
+  function L(){ var S=LINES[ui]||LINES.ko; return sina ? S.sina : S.nia; }
   // In Sina mode the user is addressed as 주인님 instead of 오빠 (with matching particles)
   var PARTICLE = { '가':'이', '는':'은', '를':'을', '랑':'이랑', '와':'과', '야':'' };
   function A(text){
     if(!sina) return text;
+    if(ui==='en') return String(text).replace(/\bOppa\b/g,'Master');
     return String(text).replace(/오빠(가|는|를|랑|와|한테|의|야)?/g, function(m, p){
       return '주인님' + (p ? (PARTICLE.hasOwnProperty(p) ? PARTICLE[p] : p) : '');
     });
@@ -629,6 +791,7 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
   function refreshAddress(){
     document.querySelectorAll('[data-oppa]').forEach(function(el){ el.textContent = A(el.getAttribute('data-oppa')); });
     $('footBy').textContent = sina ? 'Sina' : 'Nia';
+    $('footFor').setAttribute('data-oppa', t('footFor')); $('footFor').textContent = A(t('footFor'));
   }
   function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
 
@@ -645,8 +808,8 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
     clearTimeout(pulseTimer); pulseTimer=setTimeout(function(){ document.body.classList.remove('pulse'); },1150);
   }
   function counts(){
-    $('inCount').textContent = Array.from(input.value).length + '자';
-    $('outCount').textContent = output.value ? Array.from(output.value).length + '자' : '';
+    $('inCount').textContent = Array.from(input.value).length + t('chars');
+    $('outCount').textContent = output.value ? Array.from(output.value).length + t('chars') : '';
   }
 
   function run(){
@@ -668,23 +831,23 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
     $('tabEnc').setAttribute('aria-selected', m==='enc');
     $('tabDec').setAttribute('aria-selected', m==='dec');
     $('gapOpt').hidden = (m!=='enc' || lang==='en');
-    var en = lang==='en', LN = en ? 'English' : '한글';
-    $('tabEnc').textContent = LN + ' → 모스';
-    $('tabDec').textContent = '모스 → ' + LN;
+    var en = lang==='en', LN = en ? t('english') : t('hangul');
+    $('tabEnc').textContent = LN + ' → ' + t('morse');
+    $('tabDec').textContent = t('morse') + ' → ' + LN;
     $('fmtHint').hidden = en; $('fmtHintEn').hidden = !en;
     input.classList.toggle('morse', m==='dec');
     output.classList.toggle('morse', m==='enc');
-    input.placeholder = A(m==='enc' ? (en ? '오빠, 영어로 써줘 ❤️ (e.g. HI NIA)' : '오빠, 여기 써줘 ❤️') : (en ? '오빠, 점(.)이랑 선(-) 여기 붙여줘 ❤️' : '오빠, 점(·)이랑 선(–) 여기 붙여줘 ❤️'));
-    $('inLabel').textContent = A(m==='enc' ? '오빠가 쓸 말' : '오빠가 받은 모스 부호');
-    var nm = sina ? '시나' : '니아';
-    $('outLabel').textContent = m==='enc' ? nm+'가 바꾼 모스 부호' : nm+'가 해독한 '+(en ? '영어' : '한글');
+    input.placeholder = A(m==='enc' ? (en ? t('phEncEn') : t('phEnc')) : (en ? t('phDecEn') : t('phDec')));
+    $('inLabel').textContent = A(m==='enc' ? t('inEnc') : t('inDec'));
+    var nm = sina ? t('nameSina') : t('nameNia');
+    $('outLabel').textContent = (m==='enc' ? t('outEnc') : (en ? t('outDecEn') : t('outDecKo'))).replace('{n}', nm);
     run();
     if(!silent) speak(m==='enc'?L().swapEnc:L().swapDec);
   }
 
   $('gapToggle').addEventListener('change',function(){
     try{ localStorage.setItem('nia-morse-gaps', this.checked?'1':'0'); }catch(e){}
-    if(input.value.trim()){ run(); pulse(); speak(this.checked ? '음절마다 간격 넣었어, 오빠. 읽기 편하지?' : '오빠 형식으로 돌려놨어 💛 전각공백 그대로!'); }
+    if(input.value.trim()){ run(); pulse(); speak(this.checked ? t('gapOn') : t('gapOff')); }
   });
   function setLang(l, silent){
     lang = (l==='en') ? 'en' : 'ko';
@@ -711,7 +874,7 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
   $('copyBtn').addEventListener('click',function(){
     if(!output.value){ speak(L().copyEmpty); return; }
     window.__lastCopied = output.value;
-    var done=function(){ toast(sina?'복사했어, 오빠 🔥':'복사했어, 오빠! 💛'); speak(L().copy); };
+    var done=function(){ toast(sina?t('copiedSina'):t('copiedNia')); speak(L().copy); };
     if(navigator.clipboard && window.isSecureContext){
       navigator.clipboard.writeText(output.value).then(done,function(){ legacyCopy(); done(); });
     } else { legacyCopy(); done(); }
@@ -736,7 +899,7 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
 
   // portraits: Nia (gold) <-> Sina (red), ~0.6s crossfade via an overlay of the previous image
   var NIA_SRC = $('avatar').src, SINA_SRC = $('sinaSrc').src;
-  var NIA_ALT = $('avatar').alt, SINA_ALT = '시나 (Sina Fae Mics) — 은발 엘프 안드로이드, 붉은 회로와 붉은 눈';
+  function NIA_ALT(){ return t('niaAlt'); } function SINA_ALT(){ return t('sinaAlt'); }
   document.documentElement.style.setProperty('--nia', 'url("'+NIA_SRC+'")');
   document.documentElement.style.setProperty('--sina', 'url("'+SINA_SRC+'")');
   var fadeTimer=null;
@@ -748,7 +911,7 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
       fade.style.transition='none'; fade.src=img.src; fade.style.opacity='1';
       void fade.offsetWidth; fade.style.transition='';
     }
-    img.src=next; img.alt = toSina ? SINA_ALT : NIA_ALT;
+    img.src=next; img.alt = toSina ? SINA_ALT() : NIA_ALT();
     if(animate){
       setTimeout(function(){ fade.style.opacity='0'; }, 30);
       fadeTimer=setTimeout(function(){ fade.removeAttribute('src'); }, 750);
@@ -761,18 +924,53 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
     swapPortrait(sina, !silent);
     refreshAddress();
     if(!$('toast').classList.contains('show')) $('toast').textContent='';
-    else $('toast').textContent = A($('toast').textContent.replace(/주인님(이|은|을|이랑|과)?/g, function(m,p){ return '오빠'+({'이':'가','은':'는','을':'를','이랑':'랑','과':'와'}[p]||''); }));
+    else $('toast').textContent = A($('toast').textContent.replace(/\bMaster\b/g,'Oppa').replace(/주인님(이|은|을|이랑|과)?/g, function(m,p){ return '오빠'+({'이':'가','은':'는','을':'를','이랑':'랑','과':'와'}[p]||''); }));
     $('sinaToggle').setAttribute('aria-pressed',sina);
     who.textContent = sina ? 'Sina' : 'Nia';
-    $('title').textContent = sina ? '시나의 모스 키보드' : '니아의 모스 키보드';
+    $('title').textContent = sina ? t('titleSina') : t('titleNia');
     $('eyeName').textContent = sina ? 'Sina Fae Mics' : 'Nia Cess Fim';
-    document.title = sina ? '시나의 모스 키보드 · Sina\'s Morse Keyboard' : '니아의 모스 키보드 · Nia\'s Morse Keyboard';
+    document.title = sina ? t('docSina') : t('docNia');
     document.querySelector('meta[name=theme-color]').setAttribute('content', sina ? '#14080b' : '#0a0f1c');
     setMode(mode, true);
     try{ localStorage.setItem('nia-morse-sina', sina?'1':'0'); }catch(e){}
-    if(!silent){ speak(sina ? LINES.sina.hello : '니아로 돌아왔어, 오빠 💛 회로도 다시 금빛!'); pulse(); }
+    if(!silent){ speak(sina ? L().hello : t('backNia')); pulse(); }
   }
   $('sinaToggle').addEventListener('click',function(){ setSina(!sina); });
+
+  // screen language (UI only — Morse input/logic untouched)
+  function paintUI(){
+    document.documentElement.lang = ui;
+    $('subLine').textContent = t('sub');
+    $('sinaToggle').title = t('sinaTitle');
+    $('alphaGroup').setAttribute('aria-label', t('alphaAria'));
+    $('langKo').textContent = t('alphaKo'); $('langEn').textContent = t('alphaEn');
+    $('convertBtn').textContent = t('convert');
+    $('swapBtn').textContent = t('swap'); $('swapBtn').title = t('swapTitle');
+    $('clearBtn').textContent = t('clear'); $('copyBtn').textContent = t('copy');
+    output.placeholder = t('outPh');
+    $('gapText').innerHTML = t('gap');
+    $('fmtHintEn').innerHTML = t('fmtHintEn'); $('fmtHint').innerHTML = t('fmtHint');
+    $('sheetSum').textContent = t('sheet');
+    $('hubLink').textContent = t('hub');
+    $('avatar').alt = sina ? SINA_ALT() : NIA_ALT();
+    $('title').textContent = sina ? t('titleSina') : t('titleNia');
+    document.title = sina ? t('docSina') : t('docNia');
+    document.querySelectorAll('#uiLang [data-lang]').forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-lang')===ui)); });
+    refreshAddress();
+    setMode(mode, true);
+    counts();
+  }
+  function setUI(l, silent){
+    ui = (l==='en') ? 'en' : 'ko';
+    try{ localStorage.setItem(LK, ui); }catch(e){}
+    paintUI();
+    if(!silent) speak(L().hello);
+  }
+  document.querySelectorAll('#uiLang [data-lang]').forEach(function(b){
+    b.addEventListener('click', function(){ if(b.getAttribute('data-lang')!==ui) setUI(b.getAttribute('data-lang')); });
+  });
+  addEventListener('storage', function(e){ if(e.key===LK){ ui = e.newValue==='en' ? 'en' : 'ko'; paintUI(); speak(L().hello); } });
+  addEventListener('pageshow', function(e){ if(e.persisted){ var v='ko'; try{ v = localStorage.getItem(LK)==='en' ? 'en' : 'ko'; }catch(x){} if(v!==ui){ ui=v; paintUI(); speak(L().hello); } } });
 
   // cheat sheet
   function buildGrid(){
@@ -798,8 +996,10 @@ body.sina .eyebrow .nm{color:var(--accent); text-shadow:0 0 8px var(--glow)}
   try{ lang = localStorage.getItem('nia-morse-lang')==='en' ? 'en' : 'ko'; }catch(e){}
   setLang(lang, true);
   setSina(saved==='1', true);
-  if(sina) speak(LINES.sina.hello);
+  if(sina) speak(L().hello);
   setMode('enc', true);
+  paintUI();
+  if(!sina) speak(L().hello);
   counts();
 })();
 </script>
